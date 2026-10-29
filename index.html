@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HoraCerta Escolar | Sua Rotina Escolar no Lugar Certo</title>
+  <meta name="description" content="HoraCerta Escolar em HTML, CSS e JavaScript puro. Horários das 07:30 às 17:30 com intervalos, almoço, modo de emergência e personalização completa.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d4ed8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><polyline points='12 6 12 12 16 14'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 🚨 Banner do Modo de Emergência -->
+  <div id="emergency-banner" class="emergency-banner">
+    <div class="emergency-content">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="emergency-badge">Modo Emergência Ativo</span>
+        <div>
+          <strong id="emergency-title" style="font-size: 13px;">🚨 URGENTE: Troca de Sala</strong>
+          <span id="emergency-rooms" style="font-size: 12px; opacity: 0.9; margin-left: 8px;"></span>
+        </div>
+      </div>
+      <button onclick="switchTab('notices')" class="btn" style="background: white; color: #b91c1c; font-size: 11px; padding: 4px 10px;">
+        Ver Detalhes
+      </button>
+    </div>
+  </div>
+
+  <!-- Navbar Superior -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand" onclick="switchTab('dashboard')">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="brand-text">
+          <h1>HoraCerta <span class="brand-badge">Escolar</span></h1>
+          <div class="brand-subtitle">Ensino Médio • Turno Integral (07:30 - 17:30)</div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button onclick="simulateEmergencySwap()" class="btn btn-outline" style="color: #b91c1c; border-color: #fecaca; background: #fff5f5; font-size: 11px;">
+          ⚡ Simular Troca de Sala
+        </button>
+        <button onclick="showToast('Sino Escolar 🔔', 'O sino das 07:30 está sincronizado!', 'normal')" class="btn btn-outline" style="padding: 8px 12px;">
+          🔔 Testar Som
+        </button>
+        <div style="display: flex; align-items: center; gap: 8px; padding-left: 8px; border-left: 1px solid var(--slate-200);">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" style="width: 32px; height: 32px; border-radius: 99px; object-fit: cover; border: 2px solid var(--primary-blue-border);" alt="Aluno">
+          <span style="font-size: 12px; font-weight: 800; color: var(--slate-800);" class="hidden-mobile">Lucas (3º Ano)</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Layout Principal -->
+  <div class="app-layout">
+    
+    <!-- Sidebar Lateral (Desktop) -->
+    <aside class="sidebar">
+      <div>
+        <div style="background: var(--primary-blue-light); border: 1px solid var(--primary-blue-border); border-radius: var(--radius-lg); padding: 14px; margin-bottom: 20px;">
+          <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--primary-blue);">Turma Ativa</div>
+          <div style="font-size: 14px; font-weight: 800; color: var(--slate-900);">3º Ano A - Médio</div>
+          <div style="font-size: 11px; color: var(--slate-600); margin-top: 2px;">07:30 às 17:30 (Integral)</div>
+        </div>
+
+        <nav class="nav-menu">
+          <div class="menu-label">Menu Principal</div>
+          <button class="nav-btn active" data-tab="dashboard">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+            <span>Painel do Aluno</span>
+          </button>
+          <button class="nav-btn" data-tab="schedule">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+            <span>Meus Horários</span>
+          </button>
+          <button class="nav-btn" data-tab="calendar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="m9 14 2 2 4-4"/></svg>
+            <span>Provas & Trabalhos</span>
+          </button>
+          <button class="nav-btn" data-tab="notices">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+            <span>Central de Avisos</span>
+          </button>
+          <button class="nav-btn" data-tab="profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+            <span>Perfil & Configurações</span>
+          </button>
+        </nav>
+      </div>
+
+      <div style="background: var(--slate-100); border-radius: var(--radius-md); padding: 12px; font-size: 11px; color: var(--slate-500); text-align: center;">
+        HoraCerta Escolar • v1.0<br>HTML5 • CSS3 • JavaScript Puro
+      </div>
+    </aside>
+
+    <!-- Área Principal de Conteúdo -->
+    <main class="main-content">
+      
+      <!-- TAB 1: PAINEL DO ALUNO (DASHBOARD) -->
+      <section id="tab-dashboard" class="tab-pane active">
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+          <div>
+            <span style="background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: var(--radius-full); font-size: 11px; font-weight: 700; color: #a7f3d0;">
+              ✨ Rotina Sincronizada (07:30 - 17:30)
+            </span>
+            <h2 style="font-size: 26px; font-weight: 900; margin-top: 8px;">Olá, Lucas! 👋</h2>
+            <p style="font-size: 13px; color: #bfdbfe; max-width: 580px;">
+              Aqui está o resumo da sua rotina integral no 3º Ano. Acompanhe a próxima sala, o horário de almoço e as avaliações sem se perder.
+            </p>
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onclick="switchTab('schedule')" class="btn" style="background: white; color: var(--primary-blue);">
+              📅 Ver Grade Completa
+            </button>
+            <button onclick="openAddModal()" class="btn btn-green">
+              ➕ Adicionar Meu Horário
+            </button>
+          </div>
+        </div>
+
+        <!-- Próxima Aula -->
+        <div id="dashboard-next-class" class="card" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;"></div>
+
+        <!-- Grid: Grade de Hoje + Avaliações -->
+        <div style="display: grid; grid-cols: 1; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+          <!-- Linha do Tempo de Hoje -->
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+              <h3 style="font-size: 17px; font-weight: 800; color: var(--slate-900);">Grade de Hoje (07:30 às 17:30)</h3>
+              <button onclick="switchTab('schedule')" class="btn btn-outline" style="font-size: 11px; padding: 4px 10px;">Personalizar</button>
+            </div>
+            <div id="dashboard-timeline"></div>
+          </div>
+
+          <!-- Próximas Provas -->
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+              <h3 style="font-size: 17px; font-weight: 800; color: var(--slate-900);">Próximas Provas & Trabalhos</h3>
+              <button onclick="switchTab('calendar')" class="btn btn-outline" style="font-size: 11px; padding: 4px 10px;">Ver Todas</button>
+            </div>
+            <div id="dashboard-exams"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: MEUS HORÁRIOS (GRADE) -->
+      <section id="tab-schedule" class="tab-pane">
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 16px;">
+          <div>
+            <h2 style="font-size: 22px; font-weight: 900; color: var(--slate-900);">Meus Horários da Escola</h2>
+            <p style="font-size: 13px; color: var(--slate-500); margin-top: 2px;">
+              Horários das <strong>07:30 às 17:30</strong> (11 tempos de aula, 2 intervalos e almoço). Sem nomes de professores.
+            </p>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button onclick="openAddModal()" class="btn btn-primary">➕ Adicionar Horário</button>
+            <button onclick="resetScheduleToDemo()" class="btn btn-green">🔄 Recarregar 07:30 - 17:30</button>
+            <button onclick="clearSchedule()" class="btn btn-outline" style="color: var(--emergency-red);">🧹 Limpar Grade</button>
+          </div>
+        </div>
+
+        <!-- Seletor de Dia -->
+        <div style="display: flex; gap: 8px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px;">
+          <button class="btn btn-primary" data-day="1">Segunda</button>
+          <button class="btn btn-outline" data-day="2">Terça</button>
+          <button class="btn btn-outline" data-day="3">Quarta</button>
+          <button class="btn btn-outline" data-day="4">Quinta</button>
+          <button class="btn btn-outline" data-day="5">Sexta</button>
+        </div>
+
+        <!-- Lista de Horários -->
+        <div id="schedule-list"></div>
+      </section>
+
+      <!-- TAB 3: PROVAS & ATIVIDADES -->
+      <section id="tab-calendar" class="tab-pane">
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 16px;">
+          <div>
+            <h2 style="font-size: 22px; font-weight: 900; color: var(--slate-900);">Calendário de Provas & Trabalhos</h2>
+            <p style="font-size: 13px; color: var(--slate-500); margin-top: 2px;">
+              Acompanhe as datas de avaliações, trabalhos em grupo e prazos de entrega.
+            </p>
+          </div>
+        </div>
+
+        <div id="calendar-list"></div>
+      </section>
+
+      <!-- TAB 4: CENTRAL DE AVISOS -->
+      <section id="tab-notices" class="tab-pane">
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 16px;">
+          <div>
+            <h2 style="font-size: 22px; font-weight: 900; color: var(--slate-900);">Central de Avisos e Mudanças</h2>
+            <p style="font-size: 13px; color: var(--slate-500); margin-top: 2px;">
+              Comunicados oficiais da coordenação pedagógica e alterações de salas em tempo real.
+            </p>
+          </div>
+          <button onclick="simulateEmergencySwap()" class="btn btn-danger">🚨 Simular Troca de Sala de Emergência</button>
+        </div>
+
+        <div id="notices-feed"></div>
+      </section>
+
+      <!-- TAB 5: PERFIL & ALERTAS -->
+      <section id="tab-profile" class="tab-pane">
+        <div class="card">
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" style="width: 64px; height: 64px; border-radius: var(--radius-lg); object-fit: cover;" alt="Foto">
+            <div>
+              <h2 style="font-size: 20px; font-weight: 900; color: var(--slate-900);">Lucas Mendonça</h2>
+              <div style="font-size: 12px; color: var(--slate-500);">lucas.mendonca@aluno.colegiohorizonte.edu.br</div>
+              <div style="font-size: 11px; font-weight: 700; color: var(--primary-blue); margin-top: 2px;">3º Ano A • Turno Integral (07:30 - 17:30)</div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 15px; font-weight: 800; color: var(--slate-800); margin-bottom: 12px;">Alertas Sonoros & Notificações</h3>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--slate-50); border-radius: var(--radius-md); border: 1px solid var(--slate-200);">
+              <div>
+                <strong style="font-size: 13px;">Lembrete de Início de Aula</strong>
+                <div style="font-size: 11px; color: var(--slate-500);">Avisa 5 minutos antes da próxima aula começar com a sala exata.</div>
+              </div>
+              <button onclick="showToast('Sino da Aula 🔔', 'Sua aula de Matemática começa em 5 minutos na Sala 301!', 'normal')" class="btn btn-outline" style="font-size: 11px;">Testar</button>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--slate-50); border-radius: var(--radius-md); border: 1px solid var(--slate-200);">
+              <div>
+                <strong style="font-size: 13px;">Alerta de Emergência para Troca de Sala</strong>
+                <div style="font-size: 11px; color: var(--slate-500);">Emite um som audível duplo ao ocorrer realocação urgente de espaço.</div>
+              </div>
+              <button onclick="simulateEmergencySwap()" class="btn btn-danger" style="font-size: 11px;">Testar Emergência</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- Dock Inferior Mobile (Celular) -->
+  <nav class="mobile-dock">
+    <button class="dock-btn active" data-tab="dashboard">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+      <span>Início</span>
+    </button>
+    <button class="dock-btn" data-tab="schedule">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+      <span>Horários</span>
+    </button>
+    <button class="dock-btn" data-tab="calendar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="m9 14 2 2 4-4"/></svg>
+      <span>Provas</span>
+    </button>
+    <button class="dock-btn" data-tab="notices">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+      <span>Avisos</span>
+    </button>
+    <button class="dock-btn" data-tab="profile">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+      <span>Perfil</span>
+    </button>
+  </nav>
+
+  <!-- Modal: Adicionar / Editar Horário -->
+  <div id="class-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 id="modal-class-title" style="font-size: 17px; font-weight: 800; color: var(--slate-900);">Personalizar Horário</h3>
+        <button onclick="closeModals()" style="background: none; border: none; font-size: 18px; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="class-form">
+        <div class="form-group">
+          <label class="form-label">Disciplina / Matéria:</label>
+          <input type="text" id="form-subject" class="form-input" required placeholder="Ex: Matemática, Física, Inglês...">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;" class="form-group">
+          <div>
+            <label class="form-label">Horário de Início:</label>
+            <input type="time" id="form-start-time" class="form-input" required>
+          </div>
+          <div>
+            <label class="form-label">Horário de Término:</label>
+            <input type="time" id="form-end-time" class="form-input" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Dia da Semana:</label>
+          <select id="form-day" class="form-select">
+            <option value="1">Segunda-feira</option>
+            <option value="2">Terça-feira</option>
+            <option value="3">Quarta-feira</option>
+            <option value="4">Quinta-feira</option>
+            <option value="5">Sexta-feira</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Sala ou Local:</label>
+          <input type="text" id="form-room" class="form-input" required placeholder="Ex: Sala 301, Lab de Química, Quadra...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tema da Aula / Observações:</label>
+          <input type="text" id="form-topic" class="form-input" placeholder="Ex: Exercícios do livro página 42">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button type="button" onclick="closeModals()" class="btn btn-outline">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Horário</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Duplicar Aula -->
+  <div id="duplicate-modal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 400px;">
+      <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 8px;">Duplicar Horário</h3>
+      <p style="font-size: 12px; color: var(--slate-600); margin-bottom: 14px;">Copiar esta aula para qual dia da semana?</p>
+      <form id="duplicate-form">
+        <div class="form-group">
+          <select id="dup-target-day" class="form-select">
+            <option value="1">Segunda-feira</option>
+            <option value="2">Terça-feira</option>
+            <option value="3">Quarta-feira</option>
+            <option value="4">Quinta-feira</option>
+            <option value="5">Sexta-feira</option>
+          </select>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" onclick="closeModals()" class="btn btn-outline">Cancelar</button>
+          <button type="submit" class="btn btn-green">Confirmar Cópia</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Container de Toasts Flutuantes -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- JavaScript Puro -->
+  <script src="app.js"></script>
+</body>
+</html>
